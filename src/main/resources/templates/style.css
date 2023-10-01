@@ -1,0 +1,12 @@
+form{
+    border: #c7c7c7 solid 2px;
+        background-color: #F4F7F8;
+        border-radius: 8px;
+        width: 30%;
+        margin: 0 auto;
+        /*centra*/
+}
+
+div.seccion{
+    margin-top: 10px;
+}

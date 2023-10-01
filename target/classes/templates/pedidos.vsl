@@ -1,0 +1,31 @@
+<div class="container">
+    <h1 style="margin-top: 200px">Pedidos</h1>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Detalles</th>
+            </tr>
+        </thead>
+        <tbody>
+            #foreach ($pedido in $pedidos)
+            <tr>
+                <td>$!{pedido.getId()}</td>
+                <td>
+                    #foreach($usuario in $usuarios)
+                        #if($usuario.getId() == $pedido.getUsuario_id())
+                            $usuario.getNombre()
+                        #end
+                    #end
+                </td>
+                <td>$!{pedido.getFecha()}</td>
+                <td>$!{pedido.getTipo()}</td>
+                <td><a href="/pedido?id=$!{pedido.getId()}">Detalles</a></td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>
