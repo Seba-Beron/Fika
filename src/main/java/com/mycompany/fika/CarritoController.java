@@ -77,10 +77,11 @@ public class CarritoController {
         
         List<Producto> productos = new ArrayList<>();
         List<Integer> cantidades = new ArrayList<>();
+        HashMap<Producto, Integer> carrito=cDAO.verCarrito(req.session().attribute("id"));
         
-        cDAO.verCarrito(req.session().attribute("id")).forEach((p,c)-> {
-                productos.add(p);
-                cantidades.add(c);
+        carrito.forEach((p,c)-> {
+            productos.add(p);
+            cantidades.add(c);
         });
         
         HashMap model = new HashMap();
