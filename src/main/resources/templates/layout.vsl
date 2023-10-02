@@ -35,26 +35,11 @@
 <body>
 
     <!-- Navbar Start -->
-    <div class="container-fluid fixed-top px-0 wow fadeIn" data-wow-delay="0.1s">
-        <div class="top-bar row gx-0 align-items-center d-none d-lg-flex" style="color: black">
-            <div class="col-lg-6 px-5 text-start">
-                <small><i class="fa fa-map-marker-alt me-2"></i>Av. San Martín Nte. 210</small>
-                <small class="ms-4"><i class="fa fa-envelope me-2"></i>fika@example.com</small>
-            </div>
-            <div class="col-lg-6 px-5 text-end">
-                <small>Siguenos:</small>
-                <a class="text-body ms-3" href=""><i class="fab fa-facebook-f text-white"></i></a>
-                <a class="text-body ms-3" href=""><i class="fab fa-twitter text-white"></i></a>
-                <a class="text-body ms-3" href=""><i class="fab fa-linkedin-in text-white"></i></a>
-                <a class="text-body ms-3" href="https://www.instagram.com/fikaenzoco/"><i
-                        class="fab fa-instagram text-white"></i></a>
-            </div>
-        </div>
+    <div class="container-fluid" data-wow-delay="0.1s">
 
         <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
             <a href="/inicio" class="navbar-brand ms-4 ms-lg-0">
                 <h1>Fika</h1>
-                <p>Usuario: $!{email}</p>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse"
                 data-bs-target="#navbarCollapse">
