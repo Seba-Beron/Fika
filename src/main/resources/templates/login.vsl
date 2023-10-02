@@ -1,10 +1,10 @@
 ##SET POST PARAMS
 
 <div class="jumbotron jumbotron-fluid">
-  <div class="container">
+  <div style="margin-left: 30%; margin-right: 30%">
     <br><br><br><br><br>
     
-    <h1 class="display-4">Iniciar Sesion!</h1>
+    <h1 style="text-align: center; font-size: 50px">Iniciar Sesion</h1>
     <p class="lead">
       #if ($error)
     <div class="alert alert-danger" role="alert">
@@ -14,17 +14,17 @@
 
     <form action='' method='post'>
       <div class="form-group">
-        <label for="exampleInputEmail1">Email</label>
+        <h3><label for="exampleInputEmail1">Email</label></h3>
         <input type="email" class="form-control" id="email" value="$!request.queryParams(" email")" name="email"
-          aria-describedby="emailHelp" placeholder="Enter email">
+          aria-describedby="emailHelp" placeholder="Ingrese su mail">
         <!-- el value este no sirve de nada !!?? -->
       </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" id="pass" name="pass" placeholder="Password">
+      <div class="form-group" style="margin-top: 20px">
+        <h3><label for="exampleInputPassword1">Password</label></h3>
+        <input type="password" class="form-control" id="pass" name="pass" placeholder="Ingrese su contraseña">
       </div>
       <br>
-      <button type="submit" class="btn btn-primary">Login</button>
+      <button type="submit" class="btn btn-primary" style="border-radius: 20px">Ingresar</button>
     </form>
     </p>
   </div>
