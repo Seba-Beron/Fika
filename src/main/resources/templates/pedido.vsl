@@ -1,0 +1,24 @@
+<div>
+    <h1 style="margin-top: 200px">Detalles del Pedido</h1>
+
+    <p>ID del Pedido: $!{pedido.getId()}</p>
+    <p>Fecha del Pedido: $!{pedido.getFecha()}</p>
+    <p>Dirección de Envío: $!{pedido.getDireccion()}</p>
+    <p>Tipo de Pedido: $!{pedido.getTipo()}</p>
+
+    <h2>Productos</h2>
+    <ul>
+        #set( $total = 0 )
+        #foreach ($carrito in $pedido.getCarritos())
+        <li>
+            <p>Nombre: $carrito.getProducto().getNombre()</p>
+            <p>Precio: $carrito.getProducto().getPrecio()</p>
+            <p>Cantidad: $carrito.getCantidad()</p>
+            <p>Tipo: $carrito.getProducto().getTipo()</p>
+        </li>
+        #set( $total = $total + $carrito.getProducto().getPrecio() * $carrito.getCantidad())
+        #end
+    </ul>
+    <h3>Total: $total </h3>
+    <a href="/inicio">Volver al inicio</a>
+</div>

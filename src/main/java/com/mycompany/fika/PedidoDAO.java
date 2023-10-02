@@ -14,21 +14,28 @@ import org.sql2o.Connection;
  */
 public class PedidoDAO {
 
-    public Pedido buscarPedido(int id){
+    public Pedido buscarPedido(int id) {
         
-        ArrayList<Pedido> pedidos = new ArrayList<>();
+        Pedido pedido = new Pedido();
         
         try (Connection con = Sql2oDAO.getSql2o().open()) {    
 
             String sql_pedido = "SELECT * FROM Pedido WHERE id = :id"; 
             
-            pedidos.addAll(con.createQuery(sql_pedido)
-                .executeAndFetch(Pedido.class));
+            pedido = con.createQuery(sql_pedido)
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(Pedido.class);
+
+            if (pedido != null) {
+                CarritoDAO cDAO = new CarritoDAO();
+                ArrayList<Carrito> carritos = cDAO.buscarCarritos(id);
+                pedido.setCarritos(carritos);
+            }
         }
         catch(Exception e) {
             System.out.println(e);
         }
-        return pedidos.get(0);
+        return pedido;
     }
 
     public ArrayList<Pedido> buscarPedidos(){

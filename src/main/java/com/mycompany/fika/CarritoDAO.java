@@ -80,22 +80,49 @@ public class CarritoDAO {
         return false;
     }
     
-    public HashMap<Producto, Integer> verCarrito(int id_usuario){
-        
+    public HashMap<Producto, Integer> verCarrito(int id_usuario) {
+
         HashMap<Producto, Integer> carrito = new HashMap<>();
-            
+
         try (Connection con = Sql2oDAO.getSql2o().open()) {
-            
+
             String consulta_id_pedido = "SELECT id FROM pedido WHERE Usuario_id = :id_usuario AND Estado_codigo = 0"; // estado actual
             String consulta_carritos = "SELECT * FROM carrito WHERE Pedido_id = :id_pedido";
             String consulta_productos = "SELECT * FROM producto WHERE id = :id_producto";
-            
-            int id_pedido = con                                 
-                .createQuery(consulta_id_pedido)
-                .addParameter("id_usuario", id_usuario)
-                .executeScalar(Integer.class);
-            
+
+            int id_pedido = con
+                    .createQuery(consulta_id_pedido)
+                    .addParameter("id_usuario", id_usuario)
+                    .executeScalar(Integer.class);
+
             ArrayList<Carrito> carritos = new ArrayList<>();
+
+            boolean addAll = carritos.addAll(con
+                    .createQuery(consulta_carritos)
+                    .addParameter("id_pedido", id_pedido)
+                    .executeAndFetch(Carrito.class));
+
+            if (addAll) {
+                carritos.forEach((c) -> carrito.put(con
+                        .createQuery(consulta_productos)
+                        .addParameter("id_producto", c.getProducto_id())
+                        .executeAndFetch(Producto.class).get(0), c.getCantidad()) // get(0) xd
+                );
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return carrito;
+    }
+    
+    public ArrayList<Carrito> buscarCarritos(int id_pedido) {
+            
+        ArrayList<Carrito> carritos = new ArrayList<>();
+
+        try (Connection con = Sql2oDAO.getSql2o().open()) {
+            
+            String consulta_carritos = "SELECT * FROM carrito WHERE Pedido_id = :id_pedido";
+            String consulta_productos = "SELECT * FROM producto WHERE id = :id_producto";
             
             boolean addAll = carritos.addAll(con
                     .createQuery(consulta_carritos)
@@ -104,16 +131,16 @@ public class CarritoDAO {
             
             if(addAll){
                 carritos.forEach((c)-> 
-                    carrito.put(con
+                    c.setProducto(con
                         .createQuery(consulta_productos)
                         .addParameter("id_producto", c.getProducto_id())
-                        .executeAndFetch(Producto.class).get(0), c.getCantidad()) // get(0) xd
+                        .executeAndFetch(Producto.class).get(0))
                 );
             }
         }
         catch(Exception e) {
             System.out.println(e);
         }
-        return carrito;
+        return carritos;
     }
 }

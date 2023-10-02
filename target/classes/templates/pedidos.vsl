@@ -23,7 +23,7 @@
                 </td>
                 <td>$!{pedido.getFecha()}</td>
                 <td>$!{pedido.getTipo()}</td>
-                <td><a href="/pedido?id=$!{pedido.getId()}">Detalles</a></td>
+                <td><a href="/verPedido?id=$!{pedido.getId()}">Detalles</a></td>
             </tr>
             #end
         </tbody>

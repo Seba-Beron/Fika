@@ -16,19 +16,21 @@ public class UsuarioDAO {
     private List<Usuario> usuarios;
 
     public Usuario buscarUsuario(int id) {
+
+        Usuario usuario = new Usuario();
         
         try (Connection con = Sql2oDAO.getSql2o().open()) {
             
             String sql = "SELECT * FROM usuario WHERE id = :id";
             
-            usuarios = con
-                .createQuery(sql)
-                .executeAndFetch(Usuario.class);
+            usuario = con.createQuery(sql)
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(Usuario.class);
         }
         catch(Exception e) {
             System.out.println(e);
         }
-        return usuarios.get(0);
+        return usuario;
     }
 
     public List<Usuario> buscarUsuarios() {
