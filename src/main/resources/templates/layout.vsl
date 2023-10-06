@@ -50,9 +50,6 @@
                     <a href="/inicio" class="nav-item nav-link active">
                         <h4>Inicio</h4>
                     </a>
-                    <a href="/product" class="nav-item nav-link">
-                        <h4>Productos</h4>
-                    </a>
                     #if( $admin )
                     <a href="/verPedidos" class="nav-item nav-link">
                         <h4>Pedidos</h4>
