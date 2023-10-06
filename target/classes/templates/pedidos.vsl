@@ -1,9 +1,9 @@
 <div class="container">
-    <h1 style="margin-top: 200px">Pedidos</h1>
+    <h1 style="margin-top: 150px">Pedidos</h1>
     <table class="table table-bordered table-striped">
         <thead class="thead-dark">
             <tr>
-                <th>ID</th>
+                <th>N. pedido</th>
                 <th>Cliente</th>
                 <th>Fecha</th>
                 <th>Tipo</th>

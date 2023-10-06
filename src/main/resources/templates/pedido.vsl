@@ -14,18 +14,23 @@
 
     <div class="card mt-4">
         <div class="card-body">
-            #set( $total = 0 )
-            #foreach ($carrito in $pedido.getCarritos())
-            <div class="mb-3">
-                <p><strong>$carrito.getProducto().getNombre()</strong></p>
-                <p><strong>Precio:</strong> $carrito.getProducto().getPrecio()</p>
-                <p><strong>Cantidad:</strong> $carrito.getCantidad()</p>
-                <p><strong>Tipo:</strong> $carrito.getProducto().getTipo()</p>
+            <div class="row">
+                #set( $total = 0 )
+                #foreach ($carrito in $pedido.getCarritos())
+                <div class="col-md-4 mb-4">
+                    <div class="border p-3">
+                        <p><strong>Nombre del Producto:</strong> $carrito.getProducto().getNombre()</p>
+                        <p><strong>Precio:</strong> $carrito.getProducto().getPrecio()</p>
+                        <p><strong>Cantidad:</strong> $carrito.getCantidad()</p>
+                        <p><strong>Tipo:</strong> $carrito.getProducto().getTipo()</p>
+                    </div>
+                </div>
+                #set( $total = $total + $carrito.getProducto().getPrecio() * $carrito.getCantidad())
+                #end
             </div>
-            #set( $total = $total + $carrito.getProducto().getPrecio() * $carrito.getCantidad())
-            #end
         </div>
     </div>
+
 
     <h3 class="mt-4">Total: $total</h3>
 
