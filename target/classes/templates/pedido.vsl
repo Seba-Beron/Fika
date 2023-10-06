@@ -5,8 +5,8 @@
         <div class="card-body">
             <p class="card-text"><strong>ID del Pedido:</strong> $!{pedido.getId()}</p>
             <p class="card-text"><strong>Fecha del Pedido:</strong> $!{pedido.getFecha()}</p>
-            <p class="card-text"><strong>Dirección de Envío:</strong> $!{pedido.getDireccion()}</p>
             <p class="card-text"><strong>Tipo de Pedido:</strong> $!{pedido.getTipo()}</p>
+            <p class="card-text"><strong>Dirección de Envío:</strong> $!{pedido.getDireccion()}</p>
         </div>
     </div>
 
@@ -19,7 +19,7 @@
                 #foreach ($carrito in $pedido.getCarritos())
                 <div class="col-md-4 mb-4">
                     <div class="border p-3">
-                        <p><strong>Nombre del Producto:</strong> $carrito.getProducto().getNombre()</p>
+                        <p><strong>$carrito.getProducto().getNombre()</strong></p>
                         <p><strong>Precio:</strong> $carrito.getProducto().getPrecio()</p>
                         <p><strong>Cantidad:</strong> $carrito.getCantidad()</p>
                         <p><strong>Tipo:</strong> $carrito.getProducto().getTipo()</p>
