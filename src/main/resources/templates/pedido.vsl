@@ -1,24 +1,33 @@
-<div>
-    <h1 style="margin-top: 200px">Detalles del Pedido</h1>
+<div class="container">
+    <h1 class="mt-5">Detalles del Pedido</h1>
 
-    <p>ID del Pedido: $!{pedido.getId()}</p>
-    <p>Fecha del Pedido: $!{pedido.getFecha()}</p>
-    <p>Dirección de Envío: $!{pedido.getDireccion()}</p>
-    <p>Tipo de Pedido: $!{pedido.getTipo()}</p>
+    <div class="card mt-4">
+        <div class="card-body">
+            <p class="card-text"><strong>ID del Pedido:</strong> $!{pedido.getId()}</p>
+            <p class="card-text"><strong>Fecha del Pedido:</strong> $!{pedido.getFecha()}</p>
+            <p class="card-text"><strong>Dirección de Envío:</strong> $!{pedido.getDireccion()}</p>
+            <p class="card-text"><strong>Tipo de Pedido:</strong> $!{pedido.getTipo()}</p>
+        </div>
+    </div>
 
-    <h2>Productos</h2>
-    <ul>
-        #set( $total = 0 )
-        #foreach ($carrito in $pedido.getCarritos())
-        <li>
-            <p>Nombre: $carrito.getProducto().getNombre()</p>
-            <p>Precio: $carrito.getProducto().getPrecio()</p>
-            <p>Cantidad: $carrito.getCantidad()</p>
-            <p>Tipo: $carrito.getProducto().getTipo()</p>
-        </li>
-        #set( $total = $total + $carrito.getProducto().getPrecio() * $carrito.getCantidad())
-        #end
-    </ul>
-    <h3>Total: $total </h3>
-    <a href="/inicio">Volver al inicio</a>
+    <h2 class="mt-4">Productos</h2>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            #set( $total = 0 )
+            #foreach ($carrito in $pedido.getCarritos())
+            <div class="mb-3">
+                <p><strong>$carrito.getProducto().getNombre()</strong></p>
+                <p><strong>Precio:</strong> $carrito.getProducto().getPrecio()</p>
+                <p><strong>Cantidad:</strong> $carrito.getCantidad()</p>
+                <p><strong>Tipo:</strong> $carrito.getProducto().getTipo()</p>
+            </div>
+            #set( $total = $total + $carrito.getProducto().getPrecio() * $carrito.getCantidad())
+            #end
+        </div>
+    </div>
+
+    <h3 class="mt-4">Total: $total</h3>
+
+    <a class="btn btn-primary mt-4" href="/inicio">Volver al inicio</a>
 </div>

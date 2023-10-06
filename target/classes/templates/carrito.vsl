@@ -145,7 +145,7 @@
                                                 <p class="mb-2 total-delibery">$ $!total-delibery</p>
                                             </div>
 
-                                            <button class="btn waves-effect waves-light btn-info" type="input">
+                                            <button class="btn btn-secondary" style="border-radius: 20px" type="input">
                                                 Comprar Carrito
                                                 <i class="fas fa-long-arrow-alt-right ms-2"></i>
                                             </button>
