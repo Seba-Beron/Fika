@@ -188,13 +188,20 @@ public class PedidoController {
                     .build();
 
             PreferenceClient client = new PreferenceClient();
-            Preference preference = client.create(preferenceRequest);
+            try {
+                Preference preference = client.create(preferenceRequest);
 
-            if (preference != null && preference.getId() != null) {
-                return preference;
-            } else {
-                // Manejar el caso en el que la creación de preferencia no fue exitosa.
-                return "Error al crear la preferencia";
+                if (preference != null && preference.getId() != null) {
+                    System.out.println(preference);
+                    System.out.println(preference.getId());
+                    return preference.getId();
+                } else {
+                    // Manejar el caso en el que la creación de preferencia no fue exitosa.
+                    return "Error al crear la preferencia";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "Error error al llamar a la api";
             }
         } catch (Exception e) {
             // Manejar excepciones, por ejemplo, loguear el error.

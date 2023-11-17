@@ -232,8 +232,8 @@
         },
         body: JSON.stringify(dato),
     })
-        .then(response => response.json())
         .then(response => {
+            console.log(response);
             mp.bricks().create("wallet", "wallet_container", {
                 initialization: {
                     preferenceId: response,
