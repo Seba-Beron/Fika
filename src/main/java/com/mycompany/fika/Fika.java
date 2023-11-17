@@ -68,6 +68,7 @@ public class Fika {
         get("/comprarProducto", PedidoController.comprarProducto);
         
         get("/crearPreferencia", PedidoController.crearPreferencia);
+        post("notificacion", PedidoController.aceptarPago);
 
         // Apache Cordova
         get("/loginCordova", UsuarioController.getLoginCordova); 

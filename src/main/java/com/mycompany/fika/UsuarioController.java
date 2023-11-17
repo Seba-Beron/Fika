@@ -77,9 +77,9 @@ public class UsuarioController {
                     //model.put("template", "templates/main.vsl"); esto es para cuendo se loguea
                     Usuario usuarioLogeado = usuario.get(0);
                     req.session(true);                     // Crear y retornar la sesion
-                    req.session().attribute("id", usuarioLogeado.getId() );       
+                    req.session().attribute("id", usuarioLogeado.getId());       
                     req.session().attribute("email", usuarioLogeado.getEmail());
-                    req.session().attribute("admin", usuarioLogeado.getAdmin() );
+                    req.session().attribute("admin", usuarioLogeado.getAdmin());
                     res.redirect("/inicio");
                 }else{
                     model.put("template", "templates/login.vsl");

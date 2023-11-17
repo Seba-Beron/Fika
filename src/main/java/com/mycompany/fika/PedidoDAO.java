@@ -14,6 +14,21 @@ import org.sql2o.Connection;
  */
 public class PedidoDAO {
 
+    public int obtenerPedidoActual(int id_usuario){
+        try (Connection con = Sql2oDAO.getSql2o().open()) {    
+
+            String sql_pedido = "SELECT id FROM Pedido WHERE id = :id AND Estado_codigo = 0"; 
+            
+            return con.createQuery(sql_pedido)
+                    .addParameter("id", id_usuario)
+                    .executeAndFetchFirst(Integer.class);
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+        return 0; // error
+    }
+
     public Pedido buscarPedido(int id) {
         
         Pedido pedido = new Pedido();

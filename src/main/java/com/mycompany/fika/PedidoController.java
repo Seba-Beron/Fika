@@ -10,8 +10,12 @@ import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.client.preference.PreferenceItemRequest;
+import com.mercadopago.client.preference.PreferencePaymentMethodRequest;
+import com.mercadopago.client.preference.PreferencePaymentMethodsRequest;
+import com.mercadopago.client.preference.PreferencePaymentTypeRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
 import com.mercadopago.resources.preference.Preference;
+import com.mercadopago.resources.preference.PreferencePaymentMethod;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -123,9 +127,7 @@ public class PedidoController {
         String tipo = req.queryParams("tipo");
         int tipo_pago = Integer.parseInt(req.queryParams("tipo-pago"));
 
-        System.out.println("pedido");
         PedidoDAO pDAO = new PedidoDAO();
-
         int id_pedido = pDAO.comprarCarrito(id_usuario, direccion, tipo);
 
         HashMap model = new HashMap();
@@ -134,13 +136,11 @@ public class PedidoController {
             System.out.println("fuera del horario de atencion");
             model.put("error", "no se pueden realizar pedidos fuera del horario de atencion");
         } else {
-            System.out.println("factura: " + id_pedido);
             FacturaDAO fDAO = new FacturaDAO();
-            fDAO.generarFactura(tipo_pago, id_pedido, tipo); // crear factura
+            fDAO.generarFactura(tipo_pago, id_pedido, tipo);
 
-            System.out.println("stock");
             ProductoDAO proDAO = new ProductoDAO();
-            proDAO.actualizarStock(id_pedido); // actualiza el stock
+            proDAO.actualizarStock(id_pedido);
 
             res.redirect("/inicio");
         }
@@ -148,19 +148,34 @@ public class PedidoController {
         return new VelocityTemplateEngine().render(new ModelAndView(model, "templates/layout.vsl"));
     };
 
-    public static Route crearPreferencia = (Request req, Response res) -> {
+    public static Route aceptarPago = (Request req, Response res) -> {
+        if (req.queryParams("type") == "payment") {
 
+            int id_pedido = Integer.parseInt(req.queryParams("external_reference"));
+            System.out.println(id_pedido);
+            
+            //System.out.println(id_pedido);
+            //ProductoDAO proDAO = new ProductoDAO();
+            //proDAO.actualizarStock(id_pedido);
+            return true;
+        }
+        System.out.println("no entro");
+        return false;
+    };
+
+    public static Route crearPreferencia = (Request req, Response res) -> {
         MercadoPagoConfig.setAccessToken("TEST-4546216443926115-110409-61a3ac5fe6da930fa33b3357cd5b6a76-216697042");
-        // String url = "https://api.mercadopago.com/checkout/preferences";
+        String url_segura = "https://cc07-168-90-72-71.ngrok.io/notificacion";
+        int id_usuario = req.session().attribute("id");
 
         CarritoDAO cDAO = new CarritoDAO();
+        HashMap<Producto, Integer> carrito = cDAO.verCarrito(id_usuario);
+        List<PreferenceItemRequest> items = new ArrayList<>();
+
+        PedidoDAO pDao = new PedidoDAO();
+        String id_pedido = String.valueOf(pDao.obtenerPedidoActual(id_usuario));
 
         try {
-            //req.session().attribute("id")
-            HashMap<Producto, Integer> carrito = cDAO.verCarrito(2);
-
-            List<PreferenceItemRequest> items = new ArrayList<>();
-
             carrito.forEach((p, c) -> {
                 PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
                         .id(String.valueOf(p.getId()))
@@ -182,31 +197,36 @@ public class PedidoController {
                     .failure("http://localhost:4567/inicio")
                     .build();
 
+            List<PreferencePaymentMethodRequest> excludedPaymentMethods = new ArrayList<>();
+            // excludedPaymentMethods.add(PreferencePaymentMethodRequest.builder().id("master").build());
+            // excludedPaymentMethods.add(PreferencePaymentMethodRequest.builder().id("amex").build());
+
+            List<PreferencePaymentTypeRequest> excludedPaymentTypes = new ArrayList<>();
+            excludedPaymentTypes.add(PreferencePaymentTypeRequest.builder().id("credit_card").build());
+            excludedPaymentTypes.add(PreferencePaymentTypeRequest.builder().id("debit_card").build());
+            excludedPaymentTypes.add(PreferencePaymentTypeRequest.builder().id("cash").build());
+            // excludedPaymentTypes.add(PreferencePaymentTypeRequest.builder().id("rapipago").build());
+
+            PreferencePaymentMethodsRequest paymentMethods = PreferencePaymentMethodsRequest.builder()
+                    .excludedPaymentMethods(excludedPaymentMethods)
+                    .excludedPaymentTypes(excludedPaymentTypes)
+                    .installments(12)
+                    .build();
+
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(items)
                     .backUrls(backUrls)
+                    //.paymentMethods(paymentMethods)
+                    .notificationUrl(url_segura)
+                    .externalReference(id_pedido)
                     .build();
 
             PreferenceClient client = new PreferenceClient();
-            try {
-                Preference preference = client.create(preferenceRequest);
-
-                if (preference != null && preference.getId() != null) {
-                    System.out.println(preference);
-                    System.out.println(preference.getId());
-                    return preference.getId();
-                } else {
-                    // Manejar el caso en el que la creación de preferencia no fue exitosa.
-                    return "Error al crear la preferencia";
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "Error error al llamar a la api";
-            }
+            Preference preference = client.create(preferenceRequest);
+            return preference.getId();
         } catch (Exception e) {
-            // Manejar excepciones, por ejemplo, loguear el error.
             e.printStackTrace();
-            return "Error interno al procesar la solicitud";
+            return "Error al crear las preferencias";
         }
     };
 
