@@ -156,8 +156,8 @@ public class PedidoController {
         CarritoDAO cDAO = new CarritoDAO();
 
         try {
-
-            HashMap<Producto, Integer> carrito = cDAO.verCarrito(req.session().attribute("id"));
+            //req.session().attribute("id")
+            HashMap<Producto, Integer> carrito = cDAO.verCarrito(2);
 
             List<PreferenceItemRequest> items = new ArrayList<>();
 

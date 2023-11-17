@@ -10,7 +10,6 @@ import static spark.Spark.get;
 import static spark.Spark.options;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
-import com.mercadopago.MercadoPagoConfig;
 
 
 /**
@@ -40,8 +39,13 @@ public class Fika {
 
             return "OK";
         });
-
-        before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+        
+        //before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+        before((request, response) -> {
+            response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Request-Method", "*");
+            response.header("Access-Control-Allow-Headers", "*");
+        });
         
         get("/login", UsuarioController.getLogin); 
         post("/login", UsuarioController.getLogin);

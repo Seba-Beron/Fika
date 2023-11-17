@@ -223,20 +223,19 @@
 
     const mp = new MercadoPago('TEST-0266a54c-aca4-4bc2-b89b-3b35fc30e147');
     const bricksBuilder = mp.bricks();
-    var dato = "dato inecesario xd"
 
-    fetch("http://localhost:4567/crearPreferencia", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dato),
-    })
+    fetch("http://localhost:4567/crearPreferencia")
         .then(response => {
-            console.log(response);
+            const reader = response.body.getReader();
+
+            return reader.read();  // Esto devuelve una promesa con un objeto { value, done }
+        })
+        .then(result => {
+            console.log(result.status);
+            console.log(new TextDecoder('utf-8').decode(result.value));
             mp.bricks().create("wallet", "wallet_container", {
                 initialization: {
-                    preferenceId: response,
+                    preferenceId: new TextDecoder('utf-8').decode(result.value),
                     redirectMode: "modal",
                 },
             });
