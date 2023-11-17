@@ -17,8 +17,10 @@
                                         <p class="mb-0">You have 4 items in your cart</p>
                                     </div>
                                     <div>
-                                        <p class="mb-0"><span class="text-muted">Ordenar por:</span> 
-                                            <a href="#!" class="text-body">Precio</a> <i class="fas fa-angle-down mt-1"></i></a></p>
+                                        <p class="mb-0"><span class="text-muted">Ordenar por:</span>
+                                            <a href="#!" class="text-body">Precio</a> <i
+                                                class="fas fa-angle-down mt-1"></i></a>
+                                        </p>
                                     </div>
                                 </div>
                                 #set( $i = 0 )
@@ -29,9 +31,8 @@
                                         <div class="d-flex justify-content-between">
                                             <div class="d-flex flex-row align-items-center">
                                                 <div>
-                                                    <img src="$!{p.getImagen()}.png"
-                                                        class="img-fluid rounded-3" alt="Shopping item"
-                                                        style="width: 65px;">
+                                                    <img src="$!{p.getImagen()}.png" class="img-fluid rounded-3"
+                                                        alt="Shopping item" style="width: 65px;">
                                                 </div>
                                                 <div class="ms-3">
                                                     <h5>$!{p.getNombre()}</h5>
@@ -81,12 +82,13 @@
                                                     <option value="TakeAway">Take Away</option>
                                                 </select>
                                             </div>
-                                            
+
                                             <div style="margin-top: 10px;">
-                                                <input class="form-control form-control-lg direccion" type="text" name="direccion" placeholder="Direccion de entrega">
+                                                <input class="form-control form-control-lg direccion" type="text"
+                                                    name="direccion" placeholder="Direccion de entrega">
                                                 <label class="direccion" for="direccion">Direccion</label>
                                             </div>
-                                            
+
                                             <div style="margin-top: 10px;">
                                                 <select name="tipo-pago" id="tipo-pago" class="form-select">
                                                     <option selected>Seleccione un metodo de pago</option>
@@ -98,28 +100,39 @@
                                             <br>
                                             <div>
                                                 <div class="form-outline form-white mb-4 ocultable-tarjeta">
-                                                    <input type="text" id="typeName" class="form-control form-control-lg tarjeta" siez="17" placeholder="Nombre completo" />
-                                                    <label class="form-label" for="typeName">Nombre del propietario</label>
+                                                    <input type="text" id="typeName"
+                                                        class="form-control form-control-lg tarjeta" siez="17"
+                                                        placeholder="Nombre completo" />
+                                                    <label class="form-label" for="typeName">Nombre del
+                                                        propietario</label>
                                                 </div>
-                                                
+
                                                 <div class="form-outline form-white mb-4 ocultable-tarjeta">
-                                                    <input type="text" id="typeText" class="form-control form-control-lg tarjeta" siez="17" placeholder="1234 5678 9012 3457"
-                                                        minlength="19" maxlength="19" />
-                                                    <label class="form-label" for="typeText">Numero de la tarjeta</label>
+                                                    <input type="text" id="typeText"
+                                                        class="form-control form-control-lg tarjeta" siez="17"
+                                                        placeholder="1234 5678 9012 3457" minlength="19"
+                                                        maxlength="19" />
+                                                    <label class="form-label" for="typeText">Numero de la
+                                                        tarjeta</label>
                                                 </div>
-                                                
+
                                                 <div class="row mb-4 ocultable-tarjeta">
                                                     <div class="col-md-6">
                                                         <div class="form-outline form-white">
-                                                            <input type="text" class="form-control form-control-lg tarjeta" placeholder="MM/YYYY" size="7" id="exp"
-                                                                minlength="7" maxlength="7" />
-                                                            <label class="form-label" for="typeExp">Fecha de vencimiento</label>
+                                                            <input type="text"
+                                                                class="form-control form-control-lg tarjeta"
+                                                                placeholder="MM/YYYY" size="7" id="exp" minlength="7"
+                                                                maxlength="7" />
+                                                            <label class="form-label" for="typeExp">Fecha de
+                                                                vencimiento</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-outline form-white">
-                                                            <input type="password" class="form-control form-control-lg tarjeta"
-                                                                placeholder="&#9679;&#9679;&#9679;" size="1" minlength="3" maxlength="3" />
+                                                            <input type="password"
+                                                                class="form-control form-control-lg tarjeta"
+                                                                placeholder="&#9679;&#9679;&#9679;" size="1"
+                                                                minlength="3" maxlength="3" />
                                                             <label class="form-label" for="typeText">Cvv</label>
                                                         </div>
                                                     </div>
@@ -127,12 +140,12 @@
                                             </div>
 
                                             <hr class="my-4">
-                                            
+
                                             <div class="d-flex justify-content-between">
                                                 <p class="mb-2">Subtotal</p>
                                                 <p class="mb-2">$ $!total</p>
                                             </div>
-                                            
+
                                             <div class="d-flex justify-content-between">
                                                 <p class="mb-2 ocultable-envio">Costo de envio</p>
                                                 <p class="mb-2 ocultable-envio">$ 500</p>
@@ -150,7 +163,12 @@
                                                 <i class="fas fa-long-arrow-alt-right ms-2"></i>
                                             </button>
 
+                                            <script>
+                                                var myvar = "${idPedido}";
+                                            </script>
+                                            <input type="hidden" class="idPedido" value=myvar>
                                         </form>
+                                        <div id="wallet_container"></div>
                                     </div>
                                 </div>
                             </div>
@@ -162,6 +180,7 @@
     </div>
 </section>
 
+<script src="https://sdk.mercadopago.com/js/v2"></script>
 <script>
     $('#tipo-pago').on('change', function () {
         var selectValor = $(this).val();
@@ -193,7 +212,7 @@
             $('.direccion').prop('required', true);
         } else {
             $('.total-delibery').hide();
-            $('.total').show(); 
+            $('.total').show();
             $('.ocultable-envio').hide();
 
             //$('.direccion').hide();
@@ -201,4 +220,38 @@
             $('.direccion').prop('required', false);
         }
     });
+
+    const mp = new MercadoPago('TEST-0266a54c-aca4-4bc2-b89b-3b35fc30e147');
+    const bricksBuilder = mp.bricks();
+    var dato = "dato inecesario xd"
+
+    fetch("http://localhost:4567/crearPreferencia", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dato),
+    })
+        .then(response => response.json())
+        .then(response => {
+            mp.bricks().create("wallet", "wallet_container", {
+                initialization: {
+                    preferenceId: response,
+                    redirectMode: "modal",
+                },
+            });
+        })
+        .catch(error => {
+            console.error('Error en la solicitud:', error);
+        });
+
+    //$(this).find("input.idPedido").val()
+    /*
+       mp.bricks().create("wallet", "wallet_container", {
+            initialization: {
+                preferenceId: "<PREFERENCE_ID>",
+                redirectMode: "blank"
+                //String((this).find("input.idPedido").val())
+            },
+        });*/
 </script>

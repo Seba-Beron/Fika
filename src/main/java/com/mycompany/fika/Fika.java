@@ -10,6 +10,7 @@ import static spark.Spark.get;
 import static spark.Spark.options;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
+import com.mercadopago.MercadoPagoConfig;
 
 
 /**
@@ -62,6 +63,8 @@ public class Fika {
         get("/comprarCarrito", PedidoController.comprarCarrito);
         get("/comprarProducto", PedidoController.comprarProducto);
         
+        get("/crearPreferencia", PedidoController.crearPreferencia);
+
         // Apache Cordova
         get("/loginCordova", UsuarioController.getLoginCordova); 
         post("/loginCordova", UsuarioController.getLoginCordova);
