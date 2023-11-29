@@ -6,6 +6,7 @@ package com.mycompany.fika;
 
 import java.util.List;
 
+
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
@@ -14,10 +15,15 @@ import com.mercadopago.client.preference.PreferencePaymentMethodRequest;
 import com.mercadopago.client.preference.PreferencePaymentMethodsRequest;
 import com.mercadopago.client.preference.PreferencePaymentTypeRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
+import com.mercadopago.resources.merchantorder.MerchantOrder;
 import com.mercadopago.resources.preference.Preference;
-import com.mercadopago.resources.preference.PreferencePaymentMethod;
+// import com.mercadopago.resources.preference.PreferencePaymentMethod;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import spark.ModelAndView;
@@ -149,23 +155,67 @@ public class PedidoController {
     };
 
     public static Route aceptarPago = (Request req, Response res) -> {
-        if (req.queryParams("type") == "payment") {
 
-            int id_pedido = Integer.parseInt(req.queryParams("external_reference"));
-            System.out.println(id_pedido);
-            
-            //System.out.println(id_pedido);
-            //ProductoDAO proDAO = new ProductoDAO();
-            //proDAO.actualizarStock(id_pedido);
-            return true;
+        //String Token = "TEST-4546216443926115-110409-61a3ac5fe6da930fa33b3357cd5b6a76-216697042";
+        //MercadoPagoConfig.setAccessToken(Token);
+
+        String body = req.body();
+        System.out.println(body);
+
+        String topic = "";
+        topic = (req.queryParams("topic") != null) ? req.queryParams("topic") : topic;
+        topic = (req.queryParams("type") != null) ? req.queryParams("type") : topic;
+
+        System.out.println(topic);
+
+        switch (topic) {
+            case "payment":
+                System.out.println("xd");
+            case "merchant_order":
+                System.out.println(req.queryParams("id"));
         }
-        System.out.println("no entro");
+        /*
+         * System.out.println("entro: ");
+         * //int id_pedido = Integer.parseInt(req.queryParams("external_reference"));
+         * //System.out.println(id_pedido);
+         *
+         * for (String param : req.queryParams()) {
+         * String value = req.queryParams(param);
+         * System.out.println(param + ": " + value);
+         * }
+         *
+         * System.out.println(req.queryParams("merchant_order"));
+         * //ProductoDAO proDAO = new ProductoDAO();
+         * //proDAO.actualizarStock(id_pedido);
+         * return true;
+         */
         return false;
     };
 
+    /*
+     * ?collection_id=1319746203
+     * collection_status=approved
+     * payment_id=1319746203
+     * status=approved
+     * external_reference=6
+     * payment_type=credit_card
+     * merchant_order_id=13623875614
+     * preference_id=216697042-4575f116-f93c-418c-83f0-b9d50c8a0420
+     * site_id=MLA
+     * processing_mode=aggregator
+     * merchant_account_id=null
+     */
+
     public static Route crearPreferencia = (Request req, Response res) -> {
-        MercadoPagoConfig.setAccessToken("TEST-4546216443926115-110409-61a3ac5fe6da930fa33b3357cd5b6a76-216697042");
-        String url_segura = "https://cc07-168-90-72-71.ngrok.io/notificacion";
+        // vendedor de prueba
+        // String Token = "APP_USR-8684122316708044-111915-9b580f8f53b2b76440eb7868c77db01b-1556192526";
+        // String Token = "TEST-8684122316708044-111915-aaa5dbac6ba6efce41b679534618bdd6-1556192526";
+
+        // real
+        String Token = "TEST-4546216443926115-110409-61a3ac5fe6da930fa33b3357cd5b6a76-216697042";
+        // String Token = "APP_USR-8684122316708044-111915-9b580f8f53b2b76440eb7868c77db01b-1556192526";
+        MercadoPagoConfig.setAccessToken(Token);
+        String url_segura = "https://72ea-168-90-72-71.ngrok.io/notificacion";
         int id_usuario = req.session().attribute("id");
 
         CarritoDAO cDAO = new CarritoDAO();
@@ -216,14 +266,18 @@ public class PedidoController {
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(items)
                     .backUrls(backUrls)
-                    //.paymentMethods(paymentMethods)
+                    // .paymentMethods(paymentMethods)
                     .notificationUrl(url_segura)
                     .externalReference(id_pedido)
                     .build();
-
-            PreferenceClient client = new PreferenceClient();
-            Preference preference = client.create(preferenceRequest);
-            return preference.getId();
+            try {
+                PreferenceClient client = new PreferenceClient();
+                Preference preference = client.create(preferenceRequest);
+                return preference.getId();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "Error al enviar las preferencias";
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return "Error al crear las preferencias";
