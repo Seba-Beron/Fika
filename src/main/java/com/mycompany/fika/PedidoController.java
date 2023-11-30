@@ -6,6 +6,7 @@ package com.mycompany.fika;
 
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
 
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
@@ -31,6 +32,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 import spark.template.velocity.VelocityTemplateEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -38,36 +41,49 @@ import spark.template.velocity.VelocityTemplateEngine;
  */
 public class PedidoController {
 
+    final static Logger logger = LoggerFactory.getLogger(PedidoController.class);
+
     public static Route verPedidos = (Request req, Response res) -> {
 
-        PedidoDAO pDAO = new PedidoDAO();
-        ArrayList<Pedido> pedidos = pDAO.buscarPedidos();
-
-        UsuarioDAO uDAO = new UsuarioDAO();
-        List<Usuario> usuarios = uDAO.buscarUsuarios();
-
         HashMap model = new HashMap();
-        model.put("pedidos", pedidos);
-        model.put("usuarios", usuarios);
-        model.put("template", "templates/pedidos.vsl");
+
+        try {
+            PedidoDAO pDAO = new PedidoDAO();
+            ArrayList<Pedido> pedidos = pDAO.buscarPedidos();
+
+            UsuarioDAO uDAO = new UsuarioDAO();
+            List<Usuario> usuarios = uDAO.buscarUsuarios();
+
+            model.put("pedidos", pedidos);
+            model.put("usuarios", usuarios);
+            model.put("template", "templates/pedidos.vsl");
+        } catch (Exception e) {
+            logger.error("Error al mostrar pedidos: " + e.getMessage());
+        }
+
         return new VelocityTemplateEngine().render(new ModelAndView(model, "templates/layout.vsl"));
     };
 
     public static Route verPedido = (Request req, Response res) -> {
-
-        int id = Integer.parseInt(req.queryParams("id")); // id del pedido
-
-        PedidoDAO pDAO = new PedidoDAO();
-        Pedido pedido = pDAO.buscarPedido(id);
-
-        UsuarioDAO uDAO = new UsuarioDAO();
-        Usuario usuario = uDAO.buscarUsuario(pedido.getUsuario_id());
-
         HashMap model = new HashMap();
-        model.put("pedido", pedido);
-        model.put("usuario", usuario);
-        model.put("template", "templates/pedido.vsl");
+
+        try {
+            int id = Integer.parseInt(req.queryParams("id")); // id del pedido
+
+            PedidoDAO pDAO = new PedidoDAO();
+            Pedido pedido = pDAO.buscarPedido(id);
+
+            UsuarioDAO uDAO = new UsuarioDAO();
+            Usuario usuario = uDAO.buscarUsuario(pedido.getUsuario_id());
+
+            model.put("pedido", pedido);
+            model.put("usuario", usuario);
+            model.put("template", "templates/pedido.vsl");
+        } catch (Exception e) {
+            logger.error("Error al mostrar pedido: " + e.getMessage());
+        }
         return new VelocityTemplateEngine().render(new ModelAndView(model, "templates/layout.vsl"));
+
     };
 
     public static Route verHistorialCordova = (Request req, Response res) -> {
@@ -156,8 +172,9 @@ public class PedidoController {
 
     public static Route aceptarPago = (Request req, Response res) -> {
 
-        //String Token = "TEST-4546216443926115-110409-61a3ac5fe6da930fa33b3357cd5b6a76-216697042";
-        //MercadoPagoConfig.setAccessToken(Token);
+        // String Token =
+        // "TEST-4546216443926115-110409-61a3ac5fe6da930fa33b3357cd5b6a76-216697042";
+        // MercadoPagoConfig.setAccessToken(Token);
 
         String body = req.body();
         System.out.println(body);
@@ -208,12 +225,15 @@ public class PedidoController {
 
     public static Route crearPreferencia = (Request req, Response res) -> {
         // vendedor de prueba
-        // String Token = "APP_USR-8684122316708044-111915-9b580f8f53b2b76440eb7868c77db01b-1556192526";
-        // String Token = "TEST-8684122316708044-111915-aaa5dbac6ba6efce41b679534618bdd6-1556192526";
+        // String Token =
+        // "APP_USR-8684122316708044-111915-9b580f8f53b2b76440eb7868c77db01b-1556192526";
+        // String Token =
+        // "TEST-8684122316708044-111915-aaa5dbac6ba6efce41b679534618bdd6-1556192526";
 
         // real
         String Token = "TEST-4546216443926115-110409-61a3ac5fe6da930fa33b3357cd5b6a76-216697042";
-        // String Token = "APP_USR-8684122316708044-111915-9b580f8f53b2b76440eb7868c77db01b-1556192526";
+        // String Token =
+        // "APP_USR-8684122316708044-111915-9b580f8f53b2b76440eb7868c77db01b-1556192526";
         MercadoPagoConfig.setAccessToken(Token);
         String url_segura = "https://72ea-168-90-72-71.ngrok.io/notificacion";
         int id_usuario = req.session().attribute("id");
@@ -280,6 +300,7 @@ public class PedidoController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+
             return "Error al crear las preferencias";
         }
     };

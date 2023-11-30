@@ -10,18 +10,25 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 import spark.template.velocity.VelocityTemplateEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 /**
  *
  * @author Sebastian
  */
-public class IndexController {    
+public class IndexController {  
+
+    final static Logger logger = LoggerFactory.getLogger(IndexController.class);  
+
     public static Route getIndex = (Request req, Response res) -> {
     
             HashMap model = new HashMap();
             String email = req.session().attribute("email");
-            System.out.println(email);
-            
+            logger.info(email);
+                        
             if(email == null){
                 Menu menu = new Menu();
                 model.put("menu", menu.getMenu());  
