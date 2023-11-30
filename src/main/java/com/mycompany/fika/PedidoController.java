@@ -16,15 +16,10 @@ import com.mercadopago.client.preference.PreferencePaymentMethodRequest;
 import com.mercadopago.client.preference.PreferencePaymentMethodsRequest;
 import com.mercadopago.client.preference.PreferencePaymentTypeRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
-import com.mercadopago.resources.merchantorder.MerchantOrder;
 import com.mercadopago.resources.preference.Preference;
 // import com.mercadopago.resources.preference.PreferencePaymentMethod;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import spark.ModelAndView;
@@ -33,7 +28,6 @@ import spark.Response;
 import spark.Route;
 import spark.template.velocity.VelocityTemplateEngine;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -48,11 +42,8 @@ public class PedidoController {
         HashMap model = new HashMap();
 
         try {
-            PedidoDAO pDAO = new PedidoDAO();
-            ArrayList<Pedido> pedidos = pDAO.buscarPedidos();
-
-            UsuarioDAO uDAO = new UsuarioDAO();
-            List<Usuario> usuarios = uDAO.buscarUsuarios();
+            ArrayList<Pedido> pedidos = FactoryDAO.getPedidoDAO().buscarPedidos();
+            List<Usuario> usuarios = FactoryDAO.getUsuarioDAO().buscarUsuarios();
 
             model.put("pedidos", pedidos);
             model.put("usuarios", usuarios);
@@ -70,11 +61,8 @@ public class PedidoController {
         try {
             int id = Integer.parseInt(req.queryParams("id")); // id del pedido
 
-            PedidoDAO pDAO = new PedidoDAO();
-            Pedido pedido = pDAO.buscarPedido(id);
-
-            UsuarioDAO uDAO = new UsuarioDAO();
-            Usuario usuario = uDAO.buscarUsuario(pedido.getUsuario_id());
+            Pedido pedido = FactoryDAO.getPedidoDAO().buscarPedido(id);
+            Usuario usuario = FactoryDAO.getUsuarioDAO().buscarUsuario(pedido.getUsuario_id());
 
             model.put("pedido", pedido);
             model.put("usuario", usuario);
@@ -86,25 +74,10 @@ public class PedidoController {
 
     };
 
-    public static Route verHistorialCordova = (Request req, Response res) -> {
-        int id_usuario = 2;
-        // req.session().attribute("id");
-
-        PedidoDAO pDAO = new PedidoDAO();
-        ArrayList<Pedido> pedidos = pDAO.buscarHistorial(id_usuario); // cast ???
-
-        HashMap model = new HashMap();
-        model.put("pedidos", pedidos);
-
-        return new VelocityTemplateEngine().render(new ModelAndView(model, "templatesCordova/historial.vsl"));
-    };
-
     public static Route verHistorial = (Request req, Response res) -> {
 
         int id_usuario = req.session().attribute("id");
-
-        PedidoDAO pDAO = new PedidoDAO();
-        ArrayList<Pedido> pedidos = pDAO.buscarHistorial(id_usuario); // cast ???
+        ArrayList<Pedido> pedidos = FactoryDAO.getPedidoDAO().buscarHistorial(id_usuario);
 
         HashMap model = new HashMap();
         model.put("pedidos", pedidos);
@@ -112,45 +85,14 @@ public class PedidoController {
         return new VelocityTemplateEngine().render(new ModelAndView(model, "templates/layout.vsl"));
     };
 
-    public static Route comprarCarritoCordova = (Request req, Response res) -> {
-        int id_usuario = req.session().attribute("id");
-        String direccion = req.queryParams("direccion");
-        String tipo = req.queryParams("tipo");
-        int tipo_pago = Integer.parseInt(req.queryParams("tipo-pago"));
-
-        System.out.println("pedido");
-        PedidoDAO pDAO = new PedidoDAO();
-
-        int id_pedido = pDAO.comprarCarrito(id_usuario, direccion, tipo);
-
-        HashMap model = new HashMap();
-
-        if (id_pedido < 0) {
-            System.out.println("fuera del horario de atencion");
-            model.put("error", "no se pueden realizar pedidos fuera del horario de atencion");
-        } else {
-            System.out.println("factura: " + id_pedido);
-            FacturaDAO fDAO = new FacturaDAO();
-            fDAO.generarFactura(tipo_pago, id_pedido, tipo); // crear factura
-
-            System.out.println("stock");
-            ProductoDAO proDAO = new ProductoDAO();
-            proDAO.actualizarStock(id_pedido); // actualiza el stock
-
-            res.redirect("/inicioCordova");
-        }
-        // que hago con el layout?
-        return new VelocityTemplateEngine().render(new ModelAndView(model, "templates/layout.vsl"));
-    };
-
     public static Route comprarCarrito = (Request req, Response res) -> {
+
         int id_usuario = req.session().attribute("id");
         String direccion = req.queryParams("direccion");
         String tipo = req.queryParams("tipo");
         int tipo_pago = Integer.parseInt(req.queryParams("tipo-pago"));
 
-        PedidoDAO pDAO = new PedidoDAO();
-        int id_pedido = pDAO.comprarCarrito(id_usuario, direccion, tipo);
+        int id_pedido = FactoryDAO.getPedidoDAO().comprarCarrito(id_usuario, direccion, tipo);
 
         HashMap model = new HashMap();
 
@@ -158,11 +100,9 @@ public class PedidoController {
             System.out.println("fuera del horario de atencion");
             model.put("error", "no se pueden realizar pedidos fuera del horario de atencion");
         } else {
-            FacturaDAO fDAO = new FacturaDAO();
-            fDAO.generarFactura(tipo_pago, id_pedido, tipo);
+            FactoryDAO.getFacturaDAO().generarFactura(tipo_pago, id_pedido, tipo);
 
-            ProductoDAO proDAO = new ProductoDAO();
-            proDAO.actualizarStock(id_pedido);
+            FactoryDAO.getProductoDAO().actualizarStock(id_pedido);
 
             res.redirect("/inicio");
         }
@@ -238,12 +178,12 @@ public class PedidoController {
         String url_segura = "https://72ea-168-90-72-71.ngrok.io/notificacion";
         int id_usuario = req.session().attribute("id");
 
-        CarritoDAO cDAO = new CarritoDAO();
-        HashMap<Producto, Integer> carrito = cDAO.verCarrito(id_usuario);
-        List<PreferenceItemRequest> items = new ArrayList<>();
+        HashMap<Producto, Integer> carrito = FactoryDAO.getCarritoDAO().verCarrito(id_usuario);
 
-        PedidoDAO pDao = new PedidoDAO();
-        String id_pedido = String.valueOf(pDao.obtenerPedidoActual(id_usuario));
+
+        String id_pedido = String.valueOf(FactoryDAO.getPedidoDAO().obtenerPedidoActual(id_usuario));
+
+        List<PreferenceItemRequest> items = new ArrayList<>();
 
         try {
             carrito.forEach((p, c) -> {
@@ -300,7 +240,6 @@ public class PedidoController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-
             return "Error al crear las preferencias";
         }
     };
@@ -316,8 +255,7 @@ public class PedidoController {
 
         // q se comunique con los controller en ves de con los dao?
 
-        PedidoDAO pedDAO = new PedidoDAO();
-        int id_pedido = pedDAO.crearPedido(id_usuario, 1, direccion, tipo); // crea el pedido
+        int id_pedido = FactoryDAO.getPedidoDAO().crearPedido(id_usuario, 1, direccion, tipo);
 
         HashMap model = new HashMap();
 
@@ -325,14 +263,11 @@ public class PedidoController {
             System.out.println("fuera del horario de atencion");
             model.put("error", "no se pueden realizar pedidos fuera del horario de atencion");
         } else {
-            CarritoDAO cDAO = new CarritoDAO();
-            cDAO.crearCarrito(id_pedido, id_producto, cantidad); // crear carrito
+            FactoryDAO.getCarritoDAO().crearCarrito(id_pedido, id_producto, cantidad); // crear carrito
 
-            FacturaDAO fDAO = new FacturaDAO();
-            fDAO.generarFactura(id_pedido, tipo_pago, tipo); // crear factura
+            FactoryDAO.getFacturaDAO().generarFactura(id_pedido, tipo_pago, tipo); // crear factura
 
-            ProductoDAO proDAO = new ProductoDAO();
-            proDAO.actualizarStock(cantidad, id_producto); // actualiza el stock
+            FactoryDAO.getProductoDAO().actualizarStock(cantidad, id_producto); // actualiza el stock
         }
 
         return new VelocityTemplateEngine().render(new ModelAndView(model, "templates/layout.vsl"));
