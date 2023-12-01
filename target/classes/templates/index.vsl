@@ -11,7 +11,7 @@
                         <div class="container">
                             <div class="row justify-content-start">
                                 <div class="col-lg-7">
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -66,7 +66,7 @@
                     </ul>
                 </div>
             </div>
-          
+
             <div class="tab-content">
                 <div id="tab-1" class="tab-pane fade show p-0 active">
                     <div class="row g-4">
@@ -84,12 +84,12 @@
                                     </div>
                                     <div style="display:flex; justify-content: center; align-items: center">
                                         <div style="display:block">
-                                            <button type="button" class="btn btn-secondary" style="border-radius: 40px; font-size: 15px" onclick="disminuir()">- </button>
+                                            <button type="button" class="btn btn-secondary" style="border-radius: 40px; font-size: 15px" onclick="disminuir('$!{p.getId()}')">- </button>
                                             <small class="w-50 text-center">
                                                 <!--<input type="number" name="cantidad" value="$!{cantidad}" required>-->
-                                                <input class"numeros" id="cant" type="number" name="cantidad" min="1" max="$!{p.getStock()}" value="$!{cantidad}" required>
+                                                <input class="numeros" id="$!{p.getId()}" type="number" name="cantidad" min="1" max="$!{p.getStock()}" value="$!{cantidad}" required>
                                             </small>
-                                            <button type="button" class="btn btn-primary" style="border-radius: 40px" onclick="aumentar()">+</button>
+                                            <button type="button" class="btn btn-primary" style="border-radius: 40px" onclick="aumentar('$!{p.getId()}')">+</button>
                                         </div>
                                         <small class="w-50 text-center py-2">
                                             <button class="btn btn-success" style="border-radius: 40px; font-size: 16px"><small class="fa fa-shopping-bag text-white"></small></button>
@@ -104,11 +104,11 @@
                     </div>
                 </div>
             </div>
-           
+
             <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.1s">
                 <a class="btn rounded-pill py-3 px-5" href="" style="background-color: #DAF7A6">Ver mas productos</a>
             </div>
-        
+
     <!-- Product End -->
 
 
@@ -165,16 +165,16 @@
 
 <script>
 
-function aumentar(){
-    var x= document.getElementById("cant");
+function aumentar(id){
+    var x= document.getElementById(id);
     var y= parseInt(x.value)+1
     if(y<=x.max){
         x.value=y;
     }
 }
 
-function disminuir(){
-    var x= document.getElementById("cant");
+function disminuir(id){
+    var x= document.getElementById(id);
     var y= parseInt(x.value)-1
     if(y>0){
         x.value=y;

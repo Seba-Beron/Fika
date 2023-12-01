@@ -175,7 +175,7 @@ public class PedidoController {
         // String Token =
         // "APP_USR-8684122316708044-111915-9b580f8f53b2b76440eb7868c77db01b-1556192526";
         MercadoPagoConfig.setAccessToken(Token);
-        String url_segura = "https://72ea-168-90-72-71.ngrok.io/notificacion";
+        String url_segura = "https://e3ef-168-90-72-71.ngrok.io/notificacion";
         int id_usuario = req.session().attribute("id");
 
         HashMap<Producto, Integer> carrito = FactoryDAO.getCarritoDAO().verCarrito(id_usuario);
