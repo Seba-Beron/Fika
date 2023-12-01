@@ -5,9 +5,7 @@
 package com.mycompany.fika;
 
 import java.util.List;
-
 import org.slf4j.LoggerFactory;
-
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
@@ -17,7 +15,6 @@ import com.mercadopago.client.preference.PreferencePaymentMethodsRequest;
 import com.mercadopago.client.preference.PreferencePaymentTypeRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
 import com.mercadopago.resources.preference.Preference;
-// import com.mercadopago.resources.preference.PreferencePaymentMethod;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -112,56 +109,22 @@ public class PedidoController {
 
     public static Route aceptarPago = (Request req, Response res) -> {
 
-        // String Token =
-        // "TEST-4546216443926115-110409-61a3ac5fe6da930fa33b3357cd5b6a76-216697042";
-        // MercadoPagoConfig.setAccessToken(Token);
-
+        //{"action":"payment.created","api_version":"v1","data":{"id":"1316129844"},"date_created":"2023-12-01T18:58:11Z","id":108894787489,"live_mode":false,"type":"payment","user_id":"216697042"}
         String body = req.body();
         System.out.println(body);
 
-        String topic = "";
-        topic = (req.queryParams("topic") != null) ? req.queryParams("topic") : topic;
-        topic = (req.queryParams("type") != null) ? req.queryParams("type") : topic;
+        if(body.contains("payment.created")){
 
-        System.out.println(topic);
+            String id_usuario = req.queryParams("id");
 
-        switch (topic) {
-            case "payment":
-                System.out.println("xd");
-            case "merchant_order":
-                System.out.println(req.queryParams("id"));
+            System.out.println("entro: "  + id_usuario);
+
+            int id_pedido_nuevo = FactoryDAO.getPedidoDAO().comprarCarrito(Integer.parseInt(id_usuario), "", "3");
+            FactoryDAO.getProductoDAO().actualizarStock(id_pedido_nuevo);
+            return true;
         }
-        /*
-         * System.out.println("entro: ");
-         * //int id_pedido = Integer.parseInt(req.queryParams("external_reference"));
-         * //System.out.println(id_pedido);
-         *
-         * for (String param : req.queryParams()) {
-         * String value = req.queryParams(param);
-         * System.out.println(param + ": " + value);
-         * }
-         *
-         * System.out.println(req.queryParams("merchant_order"));
-         * //ProductoDAO proDAO = new ProductoDAO();
-         * //proDAO.actualizarStock(id_pedido);
-         * return true;
-         */
         return false;
     };
-
-    /*
-     * ?collection_id=1319746203
-     * collection_status=approved
-     * payment_id=1319746203
-     * status=approved
-     * external_reference=6
-     * payment_type=credit_card
-     * merchant_order_id=13623875614
-     * preference_id=216697042-4575f116-f93c-418c-83f0-b9d50c8a0420
-     * site_id=MLA
-     * processing_mode=aggregator
-     * merchant_account_id=null
-     */
 
     public static Route crearPreferencia = (Request req, Response res) -> {
         // vendedor de prueba
@@ -175,18 +138,15 @@ public class PedidoController {
         // String Token =
         // "APP_USR-8684122316708044-111915-9b580f8f53b2b76440eb7868c77db01b-1556192526";
         MercadoPagoConfig.setAccessToken(Token);
-        String url_segura = "https://e3ef-168-90-72-71.ngrok.io/notificacion";
-        int id_usuario = req.session().attribute("id");
 
+        int id_usuario = req.session().attribute("id");
         HashMap<Producto, Integer> carrito = FactoryDAO.getCarritoDAO().verCarrito(id_usuario);
 
-
-        String id_pedido = String.valueOf(FactoryDAO.getPedidoDAO().obtenerPedidoActual(id_usuario));
+        String url_segura = "https://5192-168-90-72-71.ngrok.io/notificacion?id=" + id_usuario;
 
         List<PreferenceItemRequest> items = new ArrayList<>();
 
-        try {
-            carrito.forEach((p, c) -> {
+        carrito.forEach((p, c) -> {
                 PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
                         .id(String.valueOf(p.getId()))
                         .title(p.getNombre())
@@ -201,6 +161,11 @@ public class PedidoController {
                 items.add(itemRequest);
             });
 
+        if(items.isEmpty()){
+            return "No hay productos en el carrito";
+        }
+
+        try {
             PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
                     .success("http://localhost:4567/inicio")
                     .pending("http://localhost:4567/inicio")
@@ -228,16 +193,11 @@ public class PedidoController {
                     .backUrls(backUrls)
                     // .paymentMethods(paymentMethods)
                     .notificationUrl(url_segura)
-                    .externalReference(id_pedido)
+                    //.externalReference(id_usuario)
                     .build();
-            try {
-                PreferenceClient client = new PreferenceClient();
-                Preference preference = client.create(preferenceRequest);
-                return preference.getId();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "Error al enviar las preferencias";
-            }
+            PreferenceClient client = new PreferenceClient();
+            Preference preference = client.create(preferenceRequest);
+            return preference.getId();
         } catch (Exception e) {
             e.printStackTrace();
             return "Error al crear las preferencias";
@@ -252,8 +212,6 @@ public class PedidoController {
         String direccion = req.queryParams("direccion");
         String tipo = req.queryParams("tipo");
         int tipo_pago = Integer.parseInt(req.queryParams("tipo-pago"));
-
-        // q se comunique con los controller en ves de con los dao?
 
         int id_pedido = FactoryDAO.getPedidoDAO().crearPedido(id_usuario, 1, direccion, tipo);
 

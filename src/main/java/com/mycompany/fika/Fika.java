@@ -69,6 +69,6 @@ public class Fika {
         get("/comprarProducto", PedidoController.comprarProducto);
 
         get("/crearPreferencia", PedidoController.crearPreferencia);
-        post("notificacion", PedidoController.aceptarPago);
+        post("/notificacion", PedidoController.aceptarPago);
     }
 }
