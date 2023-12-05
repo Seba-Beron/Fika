@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.fika;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.sql2o.Connection;
 
-/**
- *
- * @author Sebastian
- */
 public class ProductoDAO {
 
     private List<Producto> productos;

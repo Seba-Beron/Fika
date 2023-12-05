@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.fika;
 
 import java.util.ArrayList;
@@ -10,17 +6,11 @@ import java.util.List;
 import spark.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import spark.Request;
 import spark.Response;
 import spark.Route;
-
 import spark.template.velocity.VelocityTemplateEngine;
 
-/**
- *
- * @author Sebastian
- */
 public class CarritoController {
 
     final static Logger logger = LoggerFactory.getLogger(ProductoController.class);
@@ -35,7 +25,8 @@ public class CarritoController {
 
             res.redirect("/inicio"); // ver el tema del alert!
 
-            model.put("agregado", FactoryDAO.getCarritoDAO().actualizarCarrito(id_usuario, id_producto, cantidad));
+            FactoryDAO fDAO = new FactoryDAO();
+            model.put("agregado", fDAO.getCarritoDAO().actualizarCarrito(id_usuario, id_producto, cantidad));
         } catch (Exception e) {
             logger.error("Error al agregar al carrito: " + e.getMessage());
         }
@@ -47,7 +38,8 @@ public class CarritoController {
 
         List<Producto> productos = new ArrayList<>();
         List<Integer> cantidades = new ArrayList<>();
-        HashMap<Producto, Integer> carrito = FactoryDAO.getCarritoDAO().verCarrito(req.session().attribute("id"));
+        FactoryDAO fDAO = new FactoryDAO();
+        HashMap<Producto, Integer> carrito = fDAO.getCarritoDAO().verCarrito(req.session().attribute("id"));
 
         carrito.forEach((p, c) -> {
             productos.add(p);

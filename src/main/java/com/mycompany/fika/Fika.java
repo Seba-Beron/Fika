@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Project/Maven2/JavaApp/src/main/java/${packagePath}/${mainClassName}.java to edit this template
- */
-
 package com.mycompany.fika;
 
 import static spark.Spark.before;
@@ -11,11 +6,6 @@ import static spark.Spark.options;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 
-
-/**
- *
- * @author Sebastian
- */
 public class Fika {
 
     public static void main(String[] args) {
@@ -40,7 +30,6 @@ public class Fika {
             return "OK";
         });
 
-        //before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
         before((request, response) -> {
             response.header("Access-Control-Allow-Origin", "*");
             response.header("Access-Control-Request-Method", "*");
@@ -69,6 +58,7 @@ public class Fika {
         get("/comprarProducto", PedidoController.comprarProducto);
 
         get("/crearPreferencia", PedidoController.crearPreferencia);
+
         post("/notificacion", PedidoController.aceptarPago);
     }
 }

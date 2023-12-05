@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.fika;
 
 import java.util.HashMap;
@@ -14,10 +10,6 @@ import spark.template.velocity.VelocityTemplateEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Sebastian
- */
 public class ProductoController {
 
     final static Logger logger = LoggerFactory.getLogger(ProductoController.class);
@@ -25,8 +17,10 @@ public class ProductoController {
     public static Route inicio = (Request req, Response res) -> {
 
         HashMap model = new HashMap();
+        FactoryDAO fDAO = new FactoryDAO();
+
         try {
-            List<Producto> productos = FactoryDAO.getProductoDAO().buscarProductos();
+            List<Producto> productos = fDAO.getProductoDAO().buscarProductos();
 
             String email = req.session().attribute("email");
             Boolean admin = req.session().attribute("admin");
@@ -47,8 +41,10 @@ public class ProductoController {
     public static Route product = (Request req, Response res) -> {
 
         HashMap model = new HashMap();
+        FactoryDAO fDAO = new FactoryDAO();
+
         try {
-            List<Producto> productos = FactoryDAO.getProductoDAO().buscarProductos();
+            List<Producto> productos = fDAO.getProductoDAO().buscarProductos();
 
             model.put("productos", productos);
             model.put("cantidad", "0"); // la cantidad empieza siendo 0 para todos los productos

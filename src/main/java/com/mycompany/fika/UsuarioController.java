@@ -1,14 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.fika;
 
 import spark.ModelAndView;
 import java.util.HashMap;
-
 import java.util.List;
-
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -16,10 +10,6 @@ import spark.template.velocity.VelocityTemplateEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Sebastian
- */
 public class UsuarioController {
 
     final static Logger logger = LoggerFactory.getLogger(UsuarioController.class);
@@ -27,6 +17,7 @@ public class UsuarioController {
     public static Route getLogin = (Request req, Response res) -> {
 
         HashMap model = new HashMap();
+        FactoryDAO fDAO = new FactoryDAO();
 
         // LLAMADO AL MENU
         Menu menu = new Menu();
@@ -35,7 +26,7 @@ public class UsuarioController {
 
         if (req.queryParams("pass") != null && req.queryParams("email") != null) {
 
-            List<Usuario> usuario = FactoryDAO.getUsuarioDAO().verificarPersona(req.queryParams("email"), req.queryParams("pass"));
+            List<Usuario> usuario = fDAO.getUsuarioDAO().verificarPersona(req.queryParams("email"), req.queryParams("pass"));
 
             if (!usuario.isEmpty()) {
                 // CREAR SEASION/COOKIE

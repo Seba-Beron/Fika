@@ -2,23 +2,23 @@ package com.mycompany.fika;
 
 final public class FactoryDAO {
 
-    static CarritoDAO getCarritoDAO(){
+    CarritoDAO getCarritoDAO(){
         return new CarritoDAO();
     }
 
-    static FacturaDAO getFacturaDAO(){
+    FacturaDAO getFacturaDAO(){
         return new FacturaDAO();
     }
 
-    static PedidoDAO getPedidoDAO(){
+    PedidoDAO getPedidoDAO(){
         return new PedidoDAO();
     }
 
-    static ProductoDAO getProductoDAO(){
+    ProductoDAO getProductoDAO(){
         return new ProductoDAO();
     }
 
-    static UsuarioDAO getUsuarioDAO(){
+    UsuarioDAO getUsuarioDAO(){
         return new UsuarioDAO();
     }
 }
